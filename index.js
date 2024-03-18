@@ -92,7 +92,7 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    taskAdded:String!
+    updations:UserDetails!
   }
 `;
 
@@ -100,10 +100,14 @@ const root = {
   // getTask,
   addUser,
   getUser,
-  operations,
+  operations:(_,params)=>{
+    const updatedData = operations(null,params)
+    pubSub.publish('UPDATIONS', { updations:updatedData });
+    return updatedData
+  },
   getFormData,
   test:(_,{msg})=>{
-    pubSub.publish('GREETING', { taskAdded:msg });
+    pubSub.publish('UPDATIONS', { taskAdded:{} });
     return msg
   }
 }
@@ -113,8 +117,8 @@ const resolvers = {
     ...root,
   },
   Subscription: {
-    taskAdded: {
-      subscribe:(parent, args,) => { console.log(args);  return pubSub.asyncIterator('GREETING')},
+    updations: {
+      subscribe:(parent, args,) => { return pubSub.asyncIterator('UPDATIONS')},
     },
   },
 
