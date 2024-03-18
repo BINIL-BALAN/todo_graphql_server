@@ -154,6 +154,6 @@ const server = new ApolloServer({ typeDefs, resolvers });
   server.applyMiddleware({ app, path: "/graphql" });
 })();
 
-app.listen(port,'192.168.1.37', () => {
+app.listen(port, () => {
   console.log(`server started at http://localhost:${port}/graphql`);
 });
